@@ -9,6 +9,7 @@ from ..engine import APP_NAME, EVENT_SCRIPT_LOG, BaseEngine
 
 class ScriptManager(QtWidgets.QWidget):
     """"""
+
     signal_log: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
@@ -29,15 +30,15 @@ class ScriptManager(QtWidgets.QWidget):
 
     def init_ui(self) -> None:
         """"""
-        self.setWindowTitle("脚本策略")
+        self.setWindowTitle("Scripting Strategy")
 
-        start_button: QtWidgets.QPushButton = QtWidgets.QPushButton("启动")
+        start_button: QtWidgets.QPushButton = QtWidgets.QPushButton("Start")
         start_button.clicked.connect(self.start_script)
 
-        stop_button: QtWidgets.QPushButton = QtWidgets.QPushButton("停止")
+        stop_button: QtWidgets.QPushButton = QtWidgets.QPushButton("Stop")
         stop_button.clicked.connect(self.stop_script)
 
-        select_button: QtWidgets.QPushButton = QtWidgets.QPushButton("打开")
+        select_button: QtWidgets.QPushButton = QtWidgets.QPushButton("Open")
         select_button.clicked.connect(self.select_script)
 
         self.strategy_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
@@ -45,7 +46,7 @@ class ScriptManager(QtWidgets.QWidget):
         self.log_monitor: QtWidgets.QTextEdit = QtWidgets.QTextEdit()
         self.log_monitor.setReadOnly(True)
 
-        clear_button: QtWidgets.QPushButton = QtWidgets.QPushButton("清空")
+        clear_button: QtWidgets.QPushButton = QtWidgets.QPushButton("Clear")
         clear_button.clicked.connect(self.log_monitor.clear)
 
         hbox: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout()
@@ -92,10 +93,7 @@ class ScriptManager(QtWidgets.QWidget):
         cwd: str = str(Path.cwd())
 
         path, type_ = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            u"载入策略脚本",
-            cwd,
-            "Python File(*.py)"
+            self, "Load strategy script", cwd, "Python File(*.py)"
         )
 
         if path:

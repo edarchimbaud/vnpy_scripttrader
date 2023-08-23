@@ -1,4 +1,4 @@
-# VeighNa框架的脚本交易模块
+# Script Trading Module for VeighNa Framework
 
 <p align="center">
   <img src ="https://vnpy.oss-cn-shanghai.aliyuncs.com/vnpy-logo.png"/>
@@ -11,23 +11,23 @@
     <img src ="https://img.shields.io/github/license/vnpy/vnpy.svg?color=orange"/>
 </p>
 
-## 说明
+## Description
 
-ScriptTrader是用于交易脚本执行的功能模块，和其他策略模块最大的区别在于其基于【时间驱动】的【同步逻辑】，也支持在命令行（Jupyter Notebook）中以REPL指令形式的进行交易操作，该模块没有回测功能。
+ScriptTrader is a functional module for trading script execution. The biggest difference between ScriptTrader and other strategy modules is that it is based on [time-driven] [synchronization logic], and it also supports trading operations in the form of REPL commands in the command line (Jupyter Notebook), and the module does not have backtesting capabilities.
 
-## 安装
+## Installation
 
-安装环境推荐基于3.0.0版本以上的【[**VeighNa Studio**](https://www.vnpy.com)】。
+The installation environment is recommended to be based on [[**VeighNa Studio**](https://edarchimbaud.com/veighna-website)] above version 3.0.0.
 
-直接使用pip命令：
+Use pip command directly:
 
-```
+```bash
 pip install vnpy_scripttrader
 ```
 
 
-或者下载源代码后，解压后在cmd中运行：
+Or download the source code, unzip it and run it in cmd:
 
-```
+```bash
 pip install .
 ```

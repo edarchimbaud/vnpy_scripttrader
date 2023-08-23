@@ -25,7 +25,7 @@ from vnpy.trader.object import (
     ContractData,
     LogData,
     BarData,
-    CancelRequest
+    CancelRequest,
 )
 from vnpy.trader.datafeed import BaseDatafeed, get_datafeed
 
@@ -37,6 +37,7 @@ EVENT_SCRIPT_LOG = "eScriptLog"
 
 class ScriptEngine(BaseEngine):
     """"""
+
     setting_filename: str = "script_trader_setting.json"
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
@@ -49,25 +50,26 @@ class ScriptEngine(BaseEngine):
         self.datafeed: BaseDatafeed = get_datafeed()
 
     def init(self) -> None:
-        """启动策略引擎"""
+        """Launching the strategy engine"""
         result: bool = self.datafeed.init()
         if result:
-            self.write_log("数据服务初始化成功")
+            self.write_log("Data service initialization successful")
 
     def start_strategy(self, script_path: str) -> None:
-        """运行策略线程中的策略方法"""
+        """Run the strategy methods in the strategy thread"""
         if self.strategy_active:
             return
         self.strategy_active: bool = True
 
         self.strategy_thread: Thread = Thread(
-            target=self.run_strategy, args=(script_path,))
+            target=self.run_strategy, args=(script_path,)
+        )
         self.strategy_thread.start()
 
-        self.write_log("策略交易脚本启动")
+        self.write_log("Strategy trading script started")
 
     def run_strategy(self, script_path: str) -> None:
-        """加载策略脚本并调用run函数"""
+        """Load the policy script and call the run function."""
         path: Path = Path(script_path)
         sys.path.append(str(path.parent))
 
@@ -79,11 +81,11 @@ class ScriptEngine(BaseEngine):
             importlib.reload(module)
             module.run(self)
         except Exception:
-            msg: str = f"触发异常已停止\n{traceback.format_exc()}"
+            msg: str = f"Trigger exception stopped \n{traceback.format_exc()}"
             self.write_log(msg)
 
     def stop_strategy(self) -> None:
-        """停止运行中的策略"""
+        """Stop the running strategy."""
         if not self.strategy_active:
             return
         self.strategy_active: bool = False
@@ -92,7 +94,7 @@ class ScriptEngine(BaseEngine):
             self.strategy_thread.join()
         self.strategy_thread: Thread = None
 
-        self.write_log("策略交易脚本停止")
+        self.write_log("Strategy trading script stopped")
 
     def connect_gateway(self, setting: dict, gateway_name: str) -> None:
         """"""
@@ -105,7 +107,7 @@ class ScriptEngine(BaseEngine):
         volume: float,
         direction: Direction,
         offset: Offset,
-        order_type: OrderType
+        order_type: OrderType,
     ) -> str:
         """"""
         contract: Optional[ContractData] = self.get_contract(vt_symbol)
@@ -120,7 +122,7 @@ class ScriptEngine(BaseEngine):
             volume=volume,
             price=price,
             offset=offset,
-            reference=APP_NAME
+            reference=APP_NAME,
         )
 
         vt_orderid: str = self.main_engine.send_order(req, contract.gateway_name)
@@ -132,8 +134,7 @@ class ScriptEngine(BaseEngine):
             contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)
             if contract:
                 req: SubscribeRequest = SubscribeRequest(
-                    symbol=contract.symbol,
-                    exchange=contract.exchange
+                    symbol=contract.symbol, exchange=contract.exchange
                 )
                 self.main_engine.subscribe(req, contract.gateway_name)
 
@@ -142,40 +143,48 @@ class ScriptEngine(BaseEngine):
         vt_symbol: str,
         price: float,
         volume: float,
-        order_type: OrderType = OrderType.LIMIT
+        order_type: OrderType = OrderType.LIMIT,
     ) -> str:
         """"""
-        return self.send_order(vt_symbol, price, volume, Direction.LONG, Offset.OPEN, order_type)
+        return self.send_order(
+            vt_symbol, price, volume, Direction.LONG, Offset.OPEN, order_type
+        )
 
     def sell(
         self,
         vt_symbol: str,
         price: float,
         volume: float,
-        order_type: OrderType = OrderType.LIMIT
+        order_type: OrderType = OrderType.LIMIT,
     ) -> str:
         """"""
-        return self.send_order(vt_symbol, price, volume, Direction.SHORT, Offset.CLOSE, order_type)
+        return self.send_order(
+            vt_symbol, price, volume, Direction.SHORT, Offset.CLOSE, order_type
+        )
 
     def short(
         self,
         vt_symbol: str,
         price: float,
         volume: float,
-        order_type: OrderType = OrderType.LIMIT
+        order_type: OrderType = OrderType.LIMIT,
     ) -> str:
         """"""
-        return self.send_order(vt_symbol, price, volume, Direction.SHORT, Offset.OPEN, order_type)
+        return self.send_order(
+            vt_symbol, price, volume, Direction.SHORT, Offset.OPEN, order_type
+        )
 
     def cover(
         self,
         vt_symbol: str,
         price: float,
         volume: float,
-        order_type: OrderType = OrderType.LIMIT
+        order_type: OrderType = OrderType.LIMIT,
     ) -> str:
         """"""
-        return self.send_order(vt_symbol, price, volume, Direction.LONG, Offset.CLOSE, order_type)
+        return self.send_order(
+            vt_symbol, price, volume, Direction.LONG, Offset.CLOSE, order_type
+        )
 
     def cancel_order(self, vt_orderid: str) -> None:
         """"""
@@ -190,7 +199,9 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_tick, arg=vt_symbol, use_df=use_df)
 
-    def get_ticks(self, vt_symbols: Sequence[str], use_df: bool = False) -> Sequence[TickData]:
+    def get_ticks(
+        self, vt_symbols: Sequence[str], use_df: bool = False
+    ) -> Sequence[TickData]:
         """"""
         ticks: list = []
         for vt_symbol in vt_symbols:
@@ -206,7 +217,9 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_order, arg=vt_orderid, use_df=use_df)
 
-    def get_orders(self, vt_orderids: Sequence[str], use_df: bool = False) -> Sequence[OrderData]:
+    def get_orders(
+        self, vt_orderids: Sequence[str], use_df: bool = False
+    ) -> Sequence[OrderData]:
         """"""
         orders: list = []
         for vt_orderid in vt_orderids:
@@ -244,7 +257,9 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_all_contracts, use_df=use_df)
 
-    def get_account(self, vt_accountid: str, use_df: bool = False) -> Optional[AccountData]:
+    def get_account(
+        self, vt_accountid: str, use_df: bool = False
+    ) -> Optional[AccountData]:
         """"""
         return get_data(self.main_engine.get_account, arg=vt_accountid, use_df=use_df)
 
@@ -252,17 +267,23 @@ class ScriptEngine(BaseEngine):
         """"""
         return get_data(self.main_engine.get_all_accounts, use_df=use_df)
 
-    def get_position(self, vt_positionid: str, use_df: bool = False) -> Optional[PositionData]:
+    def get_position(
+        self, vt_positionid: str, use_df: bool = False
+    ) -> Optional[PositionData]:
         """"""
         return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
 
-    def get_position_(self, vt_symbol: str, direction: Direction, use_df: bool = False) -> PositionData:
+    def get_position_(
+        self, vt_symbol: str, direction: Direction, use_df: bool = False
+    ) -> PositionData:
         """"""
         contract: ContractData = self.main_engine.get_contract(vt_symbol)
         if not contract:
             return None
 
-        vt_positionid: str = f"{contract.gateway_name}.{contract.vt_symbol}.{direction.value}"
+        vt_positionid: str = (
+            f"{contract.gateway_name}.{contract.vt_symbol}.{direction.value}"
+        )
         return get_data(self.main_engine.get_position, arg=vt_positionid, use_df=use_df)
 
     def get_all_positions(self, use_df: bool = False) -> Sequence[PositionData]:
@@ -270,11 +291,7 @@ class ScriptEngine(BaseEngine):
         return get_data(self.main_engine.get_all_positions, use_df=use_df)
 
     def get_bars(
-        self,
-        vt_symbol: str,
-        start_date: str,
-        interval: Interval,
-        use_df: bool = False
+        self, vt_symbol: str, start_date: str, interval: Interval, use_df: bool = False
     ) -> Sequence[BarData]:
         """"""
         contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)
@@ -289,7 +306,7 @@ class ScriptEngine(BaseEngine):
             exchange=contract.exchange,
             start=start,
             end=end,
-            interval=interval
+            interval=interval,
         )
 
         return get_data(self.datafeed.query_bar_history, arg=req, use_df=use_df)
@@ -304,7 +321,7 @@ class ScriptEngine(BaseEngine):
 
     def send_email(self, msg: str) -> None:
         """"""
-        subject: str = "脚本策略引擎通知"
+        subject: str = "Scripting strategy engine notification."
         self.main_engine.send_email(subject, msg)
 
 
@@ -317,7 +334,9 @@ def to_df(data_list: Sequence) -> Optional[DataFrame]:
     return DataFrame(dict_list)
 
 
-def get_data(func: callable, arg: Any = None, use_df: bool = False) -> Optional[BaseData]:
+def get_data(
+    func: callable, arg: Any = None, use_df: bool = False
+) -> Optional[BaseData]:
     """"""
     if not arg:
         data = func()

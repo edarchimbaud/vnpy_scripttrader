@@ -1,7 +1,7 @@
-# 1.0.2版本
+# Version 1.0.2
 
-1. 增加基于vt_symbol和direction的持仓查询函数
+1. Add position query function based on vt_symbol and direction
 
-# 1.0.1版本
+# Version 1.0.1
 
-1. 将模块的图标文件信息，改为完整路径字符串
+1. Change the icon file information of the module to the full path string
