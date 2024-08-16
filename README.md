@@ -17,7 +17,7 @@ ScriptTrader is a functional module for trading script execution. The biggest di
 
 ## Installation
 
-The installation environment is recommended to be based on [[**VeighNa Studio**](https://edarchimbaud.com/veighna-website)] above version 3.0.0.
+The installation environment is recommended to be based on [[**VeighNa Studio**](https://github.com/paperswithbacktest/vnpy)] above version 3.0.0.
 
 Use pip command directly:
 
